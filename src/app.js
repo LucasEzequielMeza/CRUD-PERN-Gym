@@ -15,8 +15,8 @@ app.use(express.urlencoded({ extended: false }));
 app.get('/', (req, res) => {
   res.json({message: "Bienvenido a mi API"})
 });
-app.use(clientRouters); // Utilizamos las rutas que vamos a usar en el back
-app.use(authRoutes); //Utilizamos las rutas de autenticación
+app.use('/api', clientRouters); // Utilizamos las rutas que vamos a usar en el back
+app.use('/api', authRoutes); //Utilizamos las rutas de autenticación
 
 //Manejador de errores
 app.use((err, req, res, next) => { //Creamos un manejador de errores con express para todas las rutas

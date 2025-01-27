@@ -1,25 +1,23 @@
 import { Router } from "express";
+import { 
+    getClientById, 
+    getAllClients, 
+    createClient,  
+    updateClientById,
+    deleteClientById
+} from "../controllers/clients.controller.js";
+
 
 const router = Router();
 
-router.get('/clients', (req, res) => {
-    res.send("Obteniendo clientes")
-})
+router.get('/clients', getAllClients)
 
-router.get('/clients/:id', (req, res) => {
-    res.send(`Obteniendo cliente con ID: ${req.params.id}`)
-})
+router.get('/clients/:id', getClientById)
 
-router.post('/clients', (req, res) => {
-    res.send("Creando cliente")
-})
+router.post('/clients', createClient)
 
-router.put('/clients/:id', (req, res) => {
-    res.send(`Actualizando cliente con ID: ${req.params.id}`)
-})
+router.put('/clients/:id', updateClientById)
 
-router.delete('/clients/:id', (req, res) => {
-    res.send(`Eliminando cliente con ID: ${req.params.id}`)
-}) 
+router.delete('/clients/:id', deleteClientById) 
 
 export default router;
