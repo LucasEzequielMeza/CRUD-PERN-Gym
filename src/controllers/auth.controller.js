@@ -1,8 +1,65 @@
+import bcrypt from 'bcrypt';
+import { pool } from "../db.js";
+import { createAccessToken } from '../libs/jwt.js';
 
-export const signin = (req, res) => res.send("Ingresando...")
+export const signin = async (req, res) => {
+    const { email, password } = req.body;
 
-export const signup = (req, res) => res.send("Registrando...")
+    const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
 
-export const signout = (req, res) => res.send("Saliendo...")
+    if (result.rowCount === 0) {
+        return res.status(400).json({ message: 'El correo electrónico no existe' });
+    }
 
-export const profile = (req, res) => res.send("Profile...")
+    const validPassword = await bcrypt.compare(password, result.rows[0].password);
+
+    if (!validPassword) {
+        return res.status(400).json({ message: 'Contraseña incorrecta' });
+    }
+
+    const token = await createAccessToken({ id: result.rows[0].id });
+
+    res.cookie('token', token, {
+        sameSite: 'none',
+        maxAge: 24 * 60 * 60 * 1000,
+    });
+
+    return res.json(result.rows[0]);
+};
+
+export const signup = async (req, res, next) => {
+    const { first_name, last_name, address, birth_date, email, phone_number, password, membership_expiry_date, membership_start_date } = req.body;
+
+    try {
+        const hashPassword = await bcrypt.hash(password, 10);
+        const result = await pool.query(
+            'INSERT INTO users (first_name, last_name, address, birth_date, email, phone_number, password, membership_expiry_date, membership_start_date) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *',
+            [first_name, last_name, address, birth_date, email, phone_number, hashPassword, membership_expiry_date, membership_start_date]
+        );
+
+        const token = createAccessToken({ id: result.rows[0].id });
+        res.cookie('token', token, {
+            httpOnly: true,
+            sameSite: 'none',
+            maxAge: 24 * 60 * 60 * 1000,
+        });
+
+        return res.json(result.rows[0]);
+    } catch (error) {
+        if (error.code === "23505") {
+            return res.status(409).json({ message: "El usuario ya existe" });
+        }
+        next(error);
+    }
+};
+
+export const signout = (req, res) => {
+    res.clearCookie('token');
+    res.sendStatus(200);
+};
+
+export const profile = async  (req, res) => {
+    const result = await pool.query('SELECT * FROM users WHERE id = $1', [req.userId])
+
+    return res.json(result.rows[0]);
+}

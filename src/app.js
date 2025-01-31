@@ -2,12 +2,13 @@ import express from 'express';
 import morgan from 'morgan';
 import clientRouters from './routes/clients.routes.js'
 import authRoutes from './routes/auth.routes.js'
-
+import cookieParser from 'cookie-parser';
 const app = express(); 
 
 //Middleware
 app.use(morgan('dev')); //Utilizamos Morgan para ver mensajes cortos por consola respecto a los errores del back
 app.use(express.json()); //Convertimos cualquier dato que llegue a un objeto de js
+app.use(cookieParser())
 app.use(express.urlencoded({ extended: false }));
 
 //Rutas
