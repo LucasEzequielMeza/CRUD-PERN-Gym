@@ -2,6 +2,8 @@ import express from 'express';
 import morgan from 'morgan';
 import clientRouters from './routes/clients.routes.js'
 import authRoutes from './routes/auth.routes.js'
+import clasesRoutes from './routes/clases.routes.js'
+import routineRoutes from './routes/routine.routes.js'
 import cookieParser from 'cookie-parser';
 const app = express(); 
 
@@ -18,6 +20,8 @@ app.get('/', (req, res) => {
 });
 app.use('/api', clientRouters); // Utilizamos las rutas que vamos a usar en el back
 app.use('/api', authRoutes); //Utilizamos las rutas de autenticación
+app.use('/api', clasesRoutes); //
+app.use('/api', routineRoutes); //Rutas de rutinas
 
 //Manejador de errores
 app.use((err, req, res, next) => { //Creamos un manejador de errores con express para todas las rutas

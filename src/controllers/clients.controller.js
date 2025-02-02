@@ -8,7 +8,7 @@ export const getAllClients = async (req, res, next) => { //solo admin
     return res.json(result.rows)
 }
 
-export const getClientById = async (req, res) => { //solo admin
+export const getClientById = async (req, res) => { //solo admin (Ver si se puede filtrar por nombres y mails)
 
     const result = await pool.query('SELECT * FROM users WHERE id = $1', [req.params.id])
 

@@ -30,6 +30,82 @@ FOR EACH ROW
 EXECUTE FUNCTION update_updated_at_column();
 
 
+CREATE TABLE clases (
+    id SERIAL PRIMARY KEY,
+    type_class VARCHAR(50),
+    title VARCHAR(100),
+    description TEXT,
+    data_time TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE OR REPLACE FUNCTION update_timestamp()
+RETURNS TRIGGER AS $$
+BEGIN
+   NEW.updated_at = NOW();
+   RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_update_timestamp
+BEFORE UPDATE ON clases
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
+
+CREATE TABLE exercise (
+    id INT PRIMARY KEY,
+    name_exercise VARCHAR(100),
+    description TEXT,
+    body_part VARCHAR(50),
+    link VARCHAR(255), -- Opcional: enlace a un video de demostración
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE OR REPLACE FUNCTION update_timestamp()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_update_timestamp
+BEFORE UPDATE ON exercise
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
+
+CREATE TABLE routines (
+    id INT PRIMARY KEY,
+    user_id INT,
+    title VARCHAR(100),
+    descripcion TEXT,
+    day_of_week VARCHAR(20), -- Ejemplo: "Lunes", "Martes", etc.
+    duration INT, -- Duración en minutos
+    goals VARCHAR(255), -- Objetivos de la rutina
+    completed BOOLEAN DEFAULT FALSE, -- Indicador de si la rutina ha sido completada
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE OR REPLACE FUNCTION update_timestamp()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_update_timestamp
+BEFORE UPDATE ON routines
+FOR EACH ROW
+EXECUTE FUNCTION update_timestamp();
+
+
+
+
 CREATE TABLE membership (
     id SERIAL PRIMARY KEY,                       -- Identificador único de la membresía
     client_id INT NOT NULL,                      -- Referencia al identificador del cliente en la tabla `client`
@@ -49,4 +125,3 @@ CREATE TABLE payment (
     payment_method VARCHAR(50) NOT NULL,         -- Método de pago utilizado (efectivo, tarjeta, transferencia, etc.)
     FOREIGN KEY (client_id) REFERENCES client(id) ON DELETE CASCADE  -- Clave foránea que referencia al cliente y elimina sus pagos en cascada si se elimina el cliente
 );
-

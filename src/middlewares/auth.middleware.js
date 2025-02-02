@@ -2,13 +2,13 @@ import jwt from 'jsonwebtoken';
 import { pool } from '../db.js';
 
 export const isAuth = (roles = []) => async (req, res, next) => {
-    const token = req.cookies.token;
+    const token = req.cookies.token; //obtenemos el token
 
-    if (!token) {
+    if (!token) { //Si el token no existe indicamos que no puede ingresar
         return res.status(401).json({ message: 'No estás autorizado' });
     }
 
-    jwt.verify(token, 'xyz123321zyx', async (err, decoded) => {
+    jwt.verify(token, 'xyz123321zyx', async (err, decoded) => { //Verificamos que la contraseña 
         if (err) return res.status(401).json({ message: 'No estás autorizado' });
 
         req.userId = decoded.id;
