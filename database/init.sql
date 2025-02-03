@@ -77,10 +77,10 @@ FOR EACH ROW
 EXECUTE FUNCTION update_timestamp();
 
 CREATE TABLE routines (
-    id INT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     user_id INT,
     title VARCHAR(100),
-    descripcion TEXT,
+    description TEXT,
     day_of_week VARCHAR(20), -- Ejemplo: "Lunes", "Martes", etc.
     duration INT, -- Duración en minutos
     goals VARCHAR(255), -- Objetivos de la rutina
@@ -89,6 +89,7 @@ CREATE TABLE routines (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
 
 CREATE OR REPLACE FUNCTION update_timestamp()
 RETURNS TRIGGER AS $$

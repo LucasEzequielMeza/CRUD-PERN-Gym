@@ -1,7 +1,7 @@
 import { pool } from "../db.js";
 
 export const getAllRoutines  = async (req, res, next) => {
-    const result = await pool.query('SELECT * FROM routines') 
+    const result = await pool.query('SELECT * FROM routines WHERE user_id = $1', [req.userId]) 
 
     return res.json(result.rows)
 
@@ -23,8 +23,8 @@ export const createRoutine  = async (req, res, next) => {
 
     try {
         const result = await pool.query(
-            'INSERT INTO routines ( title, description, day_of_week, duration, goals, completed) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-            [ title, description, day_of_week, duration, goals, completed]
+            'INSERT INTO routines ( title, description, day_of_week, duration, goals, completed, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+            [ title, description, day_of_week, duration, goals, completed, req.userId]
         );
         return res.json(result.rows[0])
         
