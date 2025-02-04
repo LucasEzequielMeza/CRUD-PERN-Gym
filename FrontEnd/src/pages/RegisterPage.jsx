@@ -1,17 +1,20 @@
 import React from 'react';
 import { useForm } from 'react-hook-form'
-import axios from 'axios'
 import Input from '../components/UI/Input';
 import Card from '../components/UI/Card';
 import Button from '../components/UI/Button';
 import Label from '../components/UI/Label';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 function RegisterPage() {
 
   const {register, handleSubmit, formState: { errors }} = useForm();
 
+  const {signup} = useAuth()
+
+  const navigate = useNavigate()
+
   const onSubmint = handleSubmit(async (data) => {
-    console.log(data);
     /*const response = await fetch('http://localhost:3000/api/signup',{
       method: 'POST',
       credentials: 'include', //Guardamos las credenciales
@@ -26,10 +29,8 @@ function RegisterPage() {
 
     console.log(dateSignup)
     */
-
-    const response = await axios.post('http://localhost:3000/api/signup', data, {withCredentials: true})
-
-    console.log(response)
+    await signup(data)
+    navigate('/profile')
   });
 
   return (

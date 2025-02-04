@@ -10,23 +10,26 @@ import RoutinePage from "./pages/RoutinePage"
 import RoutineFormPage from "./pages/RoutineFormPage"
 import ProfilePage from "./pages/ProfilePage"
 import NotFoundPage from "./pages/NotFoundPage"
+import {AuthProvider }from './context/AuthContext';
 
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route exact path="/" element={<HomePage />} />
-        <Route exact path="/register" element={<RegisterPage />} />
-        <Route exact path="/login" element={<LoginPage />} />
-        <Route exact path="/about" element={<AboutPage />} />
-        <Route exact path="/clases" element={<ClassPage />} />
-        
-        <Route exact path="/ejercicios" element={<ExercisePage />} />
-        <Route exact path="/rutinas" element={<RoutinePage />} />
-        <Route exact path="/rutinas/nueva" element={<RoutineFormPage />} />
-        <Route exact path="/profile" element={<ProfilePage />} />
-        <Route path='*' element={<NotFoundPage />} />
-      </Routes>
+      <AuthProvider>
+        <Routes>
+          <Route exact path="/" element={<HomePage />} />
+          <Route exact path="/register" element={<RegisterPage />} />
+          <Route exact path="/login" element={<LoginPage />} />
+          <Route exact path="/about" element={<AboutPage />} />
+          <Route exact path="/clases" element={<ClassPage />} />
+          
+          <Route exact path="/ejercicios" element={<ExercisePage />} />
+          <Route exact path="/rutinas" element={<RoutinePage />} />
+          <Route exact path="/rutinas/nueva" element={<RoutineFormPage />} />
+          <Route exact path="/profile" element={<ProfilePage />} />
+          <Route path='*' element={<NotFoundPage />} />
+        </Routes>
+      </AuthProvider>
     </BrowserRouter>
   )
 }
