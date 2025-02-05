@@ -10,7 +10,7 @@ function RegisterPage() {
 
   const {register, handleSubmit, formState: { errors }} = useForm();
 
-  const {signup} = useAuth()
+  const {signup, errors: signupErrors} = useAuth()
 
   const navigate = useNavigate()
 
@@ -29,13 +29,19 @@ function RegisterPage() {
 
     console.log(dateSignup)
     */
-    await signup(data)
-    navigate('/profile')
+    const user = await signup(data)
+    if (user) navigate('/profile')
   });
 
   return (
-    <div className='h-[calc(100vh-64px)] flex items-center justify-center'>
+    <div className='h-[calc(100vh-8rem)] flex items-center justify-center'>
       <Card>
+      { signupErrors && (
+          signupErrors.map((err) => (
+              <p key={err.id} className='bg-red-500 text-white p-2 text-center'>{ err }</p>
+            ))
+          )
+        }
         <h1 className='text-2xl font-bold text-white'>Registro</h1>
         <form onSubmit={onSubmint}>
           <Label htmlFor="first_name">Nombre</Label>
