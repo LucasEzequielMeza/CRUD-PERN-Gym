@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Outlet } from "react-router-dom";
 import { useAuth } from './context/AuthContext';
 
 import HomePage from "./pages/HomePage";
@@ -15,6 +15,7 @@ import NotFoundPage from "./pages/NotFoundPage";
 import NavBar from './components/NavBar/NavBar';
 import Container from './components/UI/Container';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import { RoutineProvider } from './context/RoutineContext';
 
 function App() {
 
@@ -35,9 +36,15 @@ function App() {
             <Route element={<ProtectedRoute isAllowed={isAuth} redirectTo={"/login"}/>}>
               <Route exact path="/clases" element={<ClassPage />} />
               <Route exact path="/ejercicios" element={<ExercisePage />} />
-              <Route exact path="/rutinas" element={<RoutinePage />} />
-              <Route exact path="/rutinas/nueva" element={<RoutineFormPage />} />
-              <Route exact path="/rutinas/1/edit" element={<RoutineFormPage />} />
+
+              <Route element={<RoutineProvider>
+                <Outlet/>
+              </RoutineProvider>}>
+                <Route exact path="/rutinas" element={<RoutinePage />} />
+                <Route exact path="/rutinas/nueva" element={<RoutineFormPage />} />
+                <Route exact path="/rutinas/1/edit" element={<RoutineFormPage />} />
+              </Route>
+
               <Route exact path="/profile" element={<ProfilePage />} />
             </Route>
 

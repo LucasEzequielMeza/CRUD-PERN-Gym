@@ -1,8 +1,8 @@
 import React from 'react'
 
-function Card({children}) {
+function Card({children, className}) {
   return (
-    <div className='bg-zinc-900 p-14 rounded-md'>
+    <div className={`bg-zinc-900 p-14 rounded-md + ${className}`}>
       {children}
     </div>
   )
