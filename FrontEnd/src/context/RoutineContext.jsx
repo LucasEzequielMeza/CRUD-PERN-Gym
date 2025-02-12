@@ -13,8 +13,10 @@ export const useRoutine = () => {
 
 export const RoutineProvider = ({ children }) => {
   const [routines, setRoutines] = useState([]);
+  const [routineErrors, setRoutineErrors] = useState([]);
 
-  const loadRoutine = async () => {
+
+  const loadRoutines = async () => {
     try {
       const res = await axios.get('/routine');
       setRoutines(res.data);
@@ -22,6 +24,28 @@ export const RoutineProvider = ({ children }) => {
       console.log(error);
     }
   };
+
+  const loadRoutine = async (id) => {
+    try {
+      const res = await axios.get(`/routine/${id}`);
+      return res.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const createRoutine = async (routine) => {
+    try {
+      const res = await axios.post('/routine', routine);
+      setRoutines([...routines, res.data]);
+      return res.data;
+    } catch (error) {
+      console.log(error)
+      if (error.response) {
+        setRoutineErrors([error.response.data])
+      }
+    }
+  }
   
 
   const deleteRoutine = async (id) => {
@@ -37,11 +61,28 @@ export const RoutineProvider = ({ children }) => {
     }
   };
 
+  const updateRoutine = async (id, routine) => {
+    try {
+      const res = await axios.put(`/routine/${id}`, routine);
+      return res.data;
+    } catch (error) {
+      if (error.response) {
+        setRoutineErrors([error.response.data])
+      }
+    }
+  };
+
+
+
   return (
     <RoutineContext.Provider value={{
-      routines,  // Asegúrate de que esté correctamente nombrado
+      routines,
+      routineErrors,
+      loadRoutines,
       loadRoutine,
-      deleteRoutine
+      createRoutine,
+      deleteRoutine,
+      updateRoutine
     }}>
       {children}
     </RoutineContext.Provider>

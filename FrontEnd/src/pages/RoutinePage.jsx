@@ -1,15 +1,17 @@
 import React, { useEffect } from 'react';
-import axios from '../api/axios.js';
 import Card from '../components/UI/Card';
 import Label from '../components/UI/Label.jsx';
 import Button from '../components/UI/Button.jsx';
 import { useRoutine } from '../context/RoutineContext.jsx';
+import { useNavigate } from "react-router-dom";
+
 
 function RoutinePage() {
-  const { routines, loadRoutine, deleteRoutine } = useRoutine();
+  const { routines, loadRoutines, deleteRoutine } = useRoutine();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    loadRoutine();
+    loadRoutines();
   }, []);
 
   return (
@@ -31,7 +33,9 @@ function RoutinePage() {
             <Label htmlFor="completed">¿Rutina completa?</Label>
             <p className='text-white'>{r.completed ? 'Completada' : 'Pendiente'}</p>
             <div className='my-2 flex justify-end gap-x-2'>
-              <Button>Editar</Button>
+              <Button onClick={() => {
+                navigate(`/rutinas/${r.id}/edit`)
+              }} >Editar</Button>
               <Button onClick={() => {
                 if (window.confirm('¿Estás seguro de eliminar la rutina?')) {
                   deleteRoutine(r.id);

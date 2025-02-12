@@ -19,7 +19,9 @@ import { RoutineProvider } from './context/RoutineContext';
 
 function App() {
 
-  const {isAuth} = useAuth()
+  const {isAuth, loading} = useAuth()
+
+  if (loading) return <div>Loading...</div>
 
   return (
     <>
@@ -42,7 +44,7 @@ function App() {
               </RoutineProvider>}>
                 <Route exact path="/rutinas" element={<RoutinePage />} />
                 <Route exact path="/rutinas/nueva" element={<RoutineFormPage />} />
-                <Route exact path="/rutinas/1/edit" element={<RoutineFormPage />} />
+                <Route exact path='/rutinas/:id/edit' element={<RoutineFormPage />} />
               </Route>
 
               <Route exact path="/profile" element={<ProfilePage />} />

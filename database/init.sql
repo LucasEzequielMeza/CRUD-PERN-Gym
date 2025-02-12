@@ -82,7 +82,7 @@ CREATE TABLE routines (
     title VARCHAR(100),
     description TEXT,
     day_of_week VARCHAR(20), -- Ejemplo: "Lunes", "Martes", etc.
-    duration INT, -- Duración en minutos
+    duration TEXT, -- Duración en minutos
     goals VARCHAR(255), -- Objetivos de la rutina
     completed BOOLEAN DEFAULT FALSE, -- Indicador de si la rutina ha sido completada
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

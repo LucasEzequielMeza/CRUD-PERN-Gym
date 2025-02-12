@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Card from '../components/UI/Card';
 import Input from '../components/UI/Input';
 import Label from '../components/UI/Label';
@@ -6,13 +6,15 @@ import Textarea from '../components/UI/Textarea';
 import Select from '../components/UI/Select';
 import Button from '../components/UI/Button';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useRoutine } from '../context/RoutineContext';
 import axios from '../api/axios';
 
 function RoutineFormPage() {
-  const { register, handleSubmit, formState: { errors } } = useForm();
-  const [postError, setPostError] = useState([]);
+  const { register, handleSubmit, formState: { errors }, setValue } = useForm();
   const navigate = useNavigate();
+  const params = useParams();
+  const { updateRoutine, loadRoutine, createRoutine, routineErrors } = useRoutine();
 
   const daysOfWeek = [
     { value: 'lunes', label: 'Lunes' },
@@ -30,28 +32,44 @@ function RoutineFormPage() {
   ];
 
   const onSubmit = handleSubmit(async (data) => {
-    try {
-      const response = await axios.post('/routine', data);
+      let response;
+      if (params.id) {
+        response = await updateRoutine(params.id, data);
+      } else {
+        response = await createRoutine(data)
+      }
       if (response) {
         navigate('/rutinas');
       }
-    } catch (error) {
-      if (error.response) {
-        const message = Array.isArray(error.response.data.message) ? error.response.data.message : [error.response.data.message];
-        setPostError(message);
-      }
-    }
   });
+
+
+  useEffect(() => {
+    if (params.id) {
+      loadRoutine(params.id).then((routine) => {
+        setValue("title", routine.title);
+        setValue("description", routine.description);
+        setValue("day_of_week", routine.day_of_week);
+        setValue("duration", routine.duration);
+        setValue("goals", routine.goals);
+        setValue("completed", routine.completed);
+      });
+    }
+  }, []);
 
   return (
     <div>
       <Card>
         {
-          postError.map((error, i) => (
+          routineErrors.map((error, i) => (
             <p key={i} className='text-red-500'>{error}</p>
           ))
         }
-        <h2 className='text-3xl font-bold text-white my-4 flex items-center justify-center'>Crear rutina</h2>
+        <h2 className='text-3xl font-bold text-white my-4 flex items-center justify-center'>
+          {
+            params.id ? "Editar Rutina" : "Crear Rutina"
+          }
+        </h2>
         <form onSubmit={onSubmit}>
           <Label htmlFor="title">Nombre de la rutina</Label>
           <Input type="text" autoFocus {...register('title', { required: true })} />
@@ -73,7 +91,11 @@ function RoutineFormPage() {
           <Select {...register('duration', { required: true })} options={routineDurations} />
           <Label htmlFor="goals">Objetivo de la rutina</Label>
           <Textarea {...register('goals')} />
-          <Button>Crear</Button>
+          <Button>
+            {
+              params.id ? "Editar" : "Crear"
+            }
+          </Button>
         </form>
       </Card>
     </div>

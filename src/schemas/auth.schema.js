@@ -24,9 +24,11 @@ export const signupSchema = z.object({
     message: "La fecha de nacimiento debe ser una fecha válida",
   }),
   email: z.string({
-    required_error: "El correo electrónico es requerido",
-    invalid_type_error: "El correo electrónico debe ser una dirección válida",
-  }).email({ message: "El correo electrónico no es válido" }),
+    required_error: 'El email es requerido',
+    invalid_type_error: 'El email debe ser un texto'
+    }).email({
+        message: 'El email debe ser un email valido'
+    }),
   phone_number: z.string({
     required_error: "El número de teléfono es requerido",
     invalid_type_error: "El número de teléfono debe ser un número",
@@ -37,7 +39,7 @@ export const signupSchema = z.object({
   }).min(8, {
     message: "La contraseña debe tener al menos 8 caracteres"
   }),
-  membership_start_date: z.string({
+  /*membership_start_date: z.string({
     invalid_type_error: "La fecha de inicio de la membresía debe ser una fecha válida"
   }).optional().refine(date => !isNaN(Date.parse(date)), {
     message: "La fecha de inicio de la membresía debe ser una fecha válida",
@@ -46,7 +48,7 @@ export const signupSchema = z.object({
     invalid_type_error: "La fecha de expiración de la membresía debe ser una fecha válida"
   }).optional().refine(date => !isNaN(Date.parse(date)), {
     message: "La fecha de expiración de la membresía debe ser una fecha válida",
-  })
+  })*/
 });
 
 
@@ -54,10 +56,8 @@ export const signinSchema = z.object({
     email: z.string({
         required_error: "El correo electrónico es requerido",
         invalid_type_error: "El correo electrónico debe ser una dirección válida",
-        pattern: {
-            message: "El correo electrónico no es válido",
-            value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-        }
+    }).email({
+      message: "El correo electrónico no es válido"
     }),
     password: z.string({
         required_error: "La contraseña es requerida",

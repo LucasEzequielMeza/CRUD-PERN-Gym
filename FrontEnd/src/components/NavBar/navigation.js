@@ -31,10 +31,6 @@ export const privateRoutes = [
         path: '/rutinas/nueva', 
     },
     {
-        name: 'Editar rutina',
-        path: '/rutinas/1/edit',
-    },
-    {
         name: 'Perfil',
         path: '/profile',
     },
