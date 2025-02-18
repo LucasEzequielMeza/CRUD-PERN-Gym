@@ -45,18 +45,46 @@ export const createClient = async (req, res, next) => { //Admin en caso de quere
     }
 }
 
-export const updateClientById = async ( req, res) => { //Admin y client
+export const updateClientById = async (req, res) => {
     const id = req.params.id;
-    const {address, phone_number, password } = req.body;
+    const { address, phone_number } = req.body;
 
-    const result = await pool.query('UPDATE users SET phone_number = $1, address = $2, password = $3 WHERE id = $4 RETURNING *', [phone_number, address, password, id]);
-
-    if (!result.rows[0]) {
-        return res.status(404).json({ message: 'Cliente no encontrado' })
+    try {
+        const result = await pool.query('UPDATE users SET phone_number = $1, address = $2 WHERE id = $3 RETURNING *', [phone_number, address, id]);
+        if (!result.rows[0]) {
+            return res.status(404).json({ message: 'Cliente no encontrado' });
+        }
+        return res.json(result.rows[0]);
+    } catch (error) {
+        return res.status(500).json({ message: 'Error al actualizar el perfil' });
     }
-
-    return res.json(result.rows[0]);
 }
+
+export const changePassword = async (req, res) => {
+    const { currentPassword, newPassword } = req.body;
+    const userId = req.params.id;
+
+    try {
+        const result = await pool.query('SELECT password FROM users WHERE id = $1', [userId]);
+        if (!result.rows[0]) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+
+        const user = result.rows[0];
+        const isMatch = await bcrypt.compare(currentPassword, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ message: 'La contraseña actual es incorrecta' });
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        await pool.query('UPDATE users SET password = $1 WHERE id = $2', [hashedPassword, userId]);
+
+        return res.json({ message: 'Contraseña actualizada correctamente' });
+    } catch (error) {
+        return res.status(500).json({ message: 'Error al cambiar la contraseña' });
+    }
+};
+
 
 export const deleteClientById = async (req, res) => { // Solo admin
 

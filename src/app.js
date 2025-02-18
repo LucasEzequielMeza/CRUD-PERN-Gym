@@ -8,6 +8,7 @@ import routineRoutes from './routes/routine.routes.js'
 import cookieParser from 'cookie-parser';
 
 
+
 const app = express(); 
 
 //Middleware
@@ -29,6 +30,7 @@ app.use('/api', clientRouters); // Utilizamos las rutas que vamos a usar en el b
 app.use('/api', authRoutes); //Utilizamos las rutas de autenticación
 app.use('/api', clasesRoutes); //
 app.use('/api', routineRoutes); //Rutas de rutinas
+
 
 //Manejador de errores
 app.use((err, req, res, next) => { //Creamos un manejador de errores con express para todas las rutas
