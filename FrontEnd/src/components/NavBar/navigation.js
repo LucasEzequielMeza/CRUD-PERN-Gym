@@ -1,14 +1,14 @@
 export const publicRoutes = [
     {
-        name: 'register',
+        name: 'Registro',
         path: '/register',
     },
     {
-        name: 'login',
+        name: 'Iniciar Sesión',
         path: '/login',
     },
     {
-        name: 'about',
+        name: 'Nosotros',
         path: '/about',
     },
 ]
@@ -17,6 +17,10 @@ export const privateRoutes = [
     {
         name: 'Clases',
         path: '/clases',
+    },
+    {
+        name: 'Crear Clase',
+        path: '/clases/nueva',
     },
     {
         name: 'Ejercicios',

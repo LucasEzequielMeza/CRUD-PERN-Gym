@@ -16,12 +16,14 @@ import NavBar from './components/NavBar/NavBar';
 import Container from './components/UI/Container';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { RoutineProvider } from './context/RoutineContext';
+import { ClassProvider } from './context/ClassContext';
+import ClassFormPage from './pages/ClassFormPage';
 
 function App() {
 
   const {isAuth, loading} = useAuth()
 
-  if (loading) return <div>Loading...</div>
+  //if (loading) return <div>Loading...</div>
 
   return (
     <>
@@ -36,7 +38,14 @@ function App() {
             </Route>
 
             <Route element={<ProtectedRoute isAllowed={isAuth} redirectTo={"/login"}/>}>
+              <Route element={<ClassProvider>
+                <Outlet/>
+              </ClassProvider>}>
               <Route exact path="/clases" element={<ClassPage />} />
+              <Route exact path="/clases/nueva" element={<ClassFormPage />} />
+              <Route exact path="/clases/:id/edit" element={<ClassFormPage />} />
+              </Route>
+
               <Route exact path="/ejercicios" element={<ExercisePage />} />
 
               <Route element={<RoutineProvider>
