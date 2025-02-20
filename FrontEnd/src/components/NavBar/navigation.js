@@ -32,7 +32,7 @@ export const privateRoutes = [
     },
     {
         name: 'Agregar Ejercicios',
-        path: '/clases/nueva',
+        path: '/ejercicios/nuevo',
     },
     {
         name: 'Mis Rutinas',

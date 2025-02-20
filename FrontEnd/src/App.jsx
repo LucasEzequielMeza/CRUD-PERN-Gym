@@ -18,6 +18,8 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import { RoutineProvider } from './context/RoutineContext';
 import { ClassProvider } from './context/ClassContext';
 import ClassFormPage from './pages/ClassFormPage';
+import ExerciseFormPage from './pages/ExerciseFormPage';
+import { ExerciseProvider } from './context/ExerciseContext';
 
 function App() {
 
@@ -38,6 +40,7 @@ function App() {
             </Route>
 
             <Route element={<ProtectedRoute isAllowed={isAuth} redirectTo={"/login"}/>}>
+
               <Route element={<ClassProvider>
                 <Outlet/>
               </ClassProvider>}>
@@ -45,8 +48,15 @@ function App() {
               <Route exact path="/clases/nueva" element={<ClassFormPage />} />
               <Route exact path="/clases/:id/edit" element={<ClassFormPage />} />
               </Route>
+              
 
-              <Route exact path="/ejercicios" element={<ExercisePage />} />
+              <Route element={<ExerciseProvider>
+                <Outlet/>
+              </ExerciseProvider>}>
+                <Route exact path="/ejercicios" element={<ExercisePage />} />
+                <Route exact path="/ejercicios/nuevo" element={<ExerciseFormPage />} />
+                <Route exact path="/ejercicios/:id/edit" element={<ExerciseFormPage />} />
+              </Route>
 
               <Route element={<RoutineProvider>
                 <Outlet/>
@@ -57,6 +67,7 @@ function App() {
               </Route>
 
               <Route exact path="/profile" element={<ProfilePage />} />
+              
             </Route>
 
             <Route path="*" element={<NotFoundPage />} />
