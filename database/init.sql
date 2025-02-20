@@ -54,7 +54,7 @@ FOR EACH ROW
 EXECUTE FUNCTION update_timestamp();
 
 CREATE TABLE exercise (
-    id INT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     name_exercise VARCHAR(100),
     description TEXT,
     body_part VARCHAR(50),

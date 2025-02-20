@@ -6,6 +6,7 @@ import cors from 'cors'
 import clasesRoutes from './routes/clases.routes.js'
 import routineRoutes from './routes/routine.routes.js'
 import cookieParser from 'cookie-parser';
+import exerciseRoutes from './routes/exercise.routes.js';
 
 
 
@@ -30,6 +31,7 @@ app.use('/api', clientRouters); // Utilizamos las rutas que vamos a usar en el b
 app.use('/api', authRoutes); //Utilizamos las rutas de autenticación
 app.use('/api', clasesRoutes); //
 app.use('/api', routineRoutes); //Rutas de rutinas
+app.use('/api', exerciseRoutes); //Rutas de ejercicios
 
 
 //Manejador de errores

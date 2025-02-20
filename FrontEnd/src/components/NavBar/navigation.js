@@ -15,6 +15,10 @@ export const publicRoutes = [
 
 export const privateRoutes = [
     {
+        name: 'Lista de clienes',
+        path: '/clients',
+    },
+    {
         name: 'Clases',
         path: '/clases',
     },
@@ -25,6 +29,10 @@ export const privateRoutes = [
     {
         name: 'Ejercicios',
         path: '/ejercicios',
+    },
+    {
+        name: 'Agregar Ejercicios',
+        path: '/clases/nueva',
     },
     {
         name: 'Mis Rutinas',
