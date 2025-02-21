@@ -22,13 +22,17 @@ export const signin = async (req, res) => {
 
     res.cookie('token', token, {
         httpOnly: true,
-        secure: true,
-        sameSite: 'none',
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'Strict',
         maxAge: 24 * 60 * 60 * 1000,
     });
 
-    return res.json(result.rows[0]);
+    return res.json({
+        user: result.rows[0],
+        token: token           
+    });
 };
+
 
 export const signup = async (req, res, next) => {
     const { first_name, last_name, address, birth_date, email, phone_number, password, membership_expiry_date, membership_start_date } = req.body;

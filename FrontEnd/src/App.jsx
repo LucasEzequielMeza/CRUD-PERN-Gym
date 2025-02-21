@@ -24,58 +24,61 @@ import ClientsPage from './pages/ClientsPage';
 
 function App() {
 
-  const {isAuth, loading} = useAuth()
-
-  //if (loading) return <div>Loading...</div>
+  const { isAuth, loading } = useAuth();
 
   return (
     <>
       <NavBar />
-        <Container className='py-5'>
-          <Routes>
-            <Route element={<ProtectedRoute isAllowed={!isAuth} redirectTo={"/rutinas"}/>}>
-              <Route exact path="/" element={<HomePage />} />
-              <Route exact path="/register" element={<RegisterPage />} />
-              <Route exact path="/login" element={<LoginPage />} />
-              <Route exact path="/about" element={<AboutPage />} />
-            </Route>
+      <Container className='py-5'>
+        <Routes>
+          {/* Rutas públicas */}
+          <Route element={<ProtectedRoute isAllowed={!isAuth} redirectTo={"/rutinas"} />}>
+            <Route exact path="/" element={<HomePage />} />
+            <Route exact path="/register" element={<RegisterPage />} />
+            <Route exact path="/login" element={<LoginPage />} />
+            <Route exact path="/about" element={<AboutPage />} />
+          </Route>
 
-            <Route element={<ProtectedRoute isAllowed={isAuth} redirectTo={"/login"}/>}>
+          {/* Rutas para admin */}
+          <Route element={<ProtectedRoute isAllowed={isAuth} allowedRoles={["admin"]} redirectTo={"/login"} />}>
+            <Route exact path="/clients" element={<ClientsPage />} />
 
-              <Route element={<ClassProvider>
-                <Outlet/>
-              </ClassProvider>}>
-              <Route exact path="/clases" element={<ClassPage />} />
+            <Route element={<ClassProvider><Outlet /></ClassProvider>}>
               <Route exact path="/clases/nueva" element={<ClassFormPage />} />
               <Route exact path="/clases/:id/edit" element={<ClassFormPage />} />
-              </Route>
-              
-
-              <Route element={<ExerciseProvider>
-                <Outlet/>
-              </ExerciseProvider>}>
-                <Route exact path="/ejercicios" element={<ExercisePage />} />
-                <Route exact path="/ejercicios/nuevo" element={<ExerciseFormPage />} />
-                <Route exact path="/ejercicios/:id/edit" element={<ExerciseFormPage />} />
-              </Route>
-
-              <Route element={<RoutineProvider>
-                <Outlet/>
-              </RoutineProvider>}>
-                <Route exact path="/rutinas" element={<RoutinePage />} />
-                <Route exact path="/rutinas/nueva" element={<RoutineFormPage />} />
-                <Route exact path='/rutinas/:id/edit' element={<RoutineFormPage />} />
-              </Route>
-
-              <Route exact path="/clients" element={<ClientsPage />} />
-
-              <Route exact path="/profile" element={<ProfilePage />} />
-
             </Route>
 
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
-        </Container>
+            <Route element={<ExerciseProvider><Outlet /></ExerciseProvider>}>
+              <Route exact path="/ejercicios/nuevo" element={<ExerciseFormPage />} />
+              <Route exact path="/ejercicios/:id/edit" element={<ExerciseFormPage />} />
+            </Route>
+          </Route>
+
+          {/* Rutas para clientes */}
+          <Route element={<ProtectedRoute isAllowed={isAuth} allowedRoles={["client"]} redirectTo={"/login"} />}>
+            <Route element={<RoutineProvider><Outlet /></RoutineProvider>}>
+              <Route exact path="/rutinas" element={<RoutinePage />} />
+              <Route exact path="/rutinas/nueva" element={<RoutineFormPage />} />
+              <Route exact path='/rutinas/:id/edit' element={<RoutineFormPage />} />
+            </Route>
+          </Route>
+
+          {/* Rutas compartidas entre admin y cliente */}
+          <Route element={<ProtectedRoute isAllowed={isAuth} allowedRoles={["admin", "client"]} redirectTo={"/login"} />}>
+            <Route element={<ClassProvider><Outlet /></ClassProvider>}>
+              <Route exact path="/clases" element={<ClassPage />} />
+            </Route>
+
+            <Route element={<ExerciseProvider><Outlet /></ExerciseProvider>}>
+              <Route exact path="/ejercicios" element={<ExercisePage />} />
+            </Route>
+
+            <Route exact path="/profile" element={<ProfilePage />} />
+          </Route>
+
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </Container>
     </>
   );
 }
