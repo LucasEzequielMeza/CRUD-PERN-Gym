@@ -15,7 +15,7 @@ export const publicRoutes = [
 
 export const privateRoutes = [
     {
-        name: 'Lista de clienes',
+        name: 'Lista de clientes',
         path: '/clients',
     },
     {

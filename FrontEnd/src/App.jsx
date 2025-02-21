@@ -20,6 +20,7 @@ import { ClassProvider } from './context/ClassContext';
 import ClassFormPage from './pages/ClassFormPage';
 import ExerciseFormPage from './pages/ExerciseFormPage';
 import { ExerciseProvider } from './context/ExerciseContext';
+import ClientsPage from './pages/ClientsPage';
 
 function App() {
 
@@ -66,8 +67,10 @@ function App() {
                 <Route exact path='/rutinas/:id/edit' element={<RoutineFormPage />} />
               </Route>
 
+              <Route exact path="/clients" element={<ClientsPage />} />
+
               <Route exact path="/profile" element={<ProfilePage />} />
-              
+
             </Route>
 
             <Route path="*" element={<NotFoundPage />} />
