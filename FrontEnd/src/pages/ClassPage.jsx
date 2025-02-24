@@ -4,6 +4,7 @@ import Label from '../components/UI/Label.jsx';
 import Button from '../components/UI/Button.jsx';
 import { useClass } from '../context/ClassContext';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext'; 
 
 const formatDateTime = (dateTimeString) => {
   const date = new Date(dateTimeString);
@@ -17,6 +18,7 @@ const formatDateTime = (dateTimeString) => {
 
 function ClassPage() {
   const { classes, loadClasses, deleteClass } = useClass();
+  const { user } = useAuth(); 
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -35,18 +37,20 @@ function ClassPage() {
             <p className='text-white'>{classItem.description}</p>
             <Label htmlFor="data_time">Fecha</Label>
             <p className='text-white'>{formatDateTime(classItem.data_time)}</p>
-            <div>
-              <Button onClick={() => navigate(`/clases/${classItem.id}/edit`)}>Editar</Button>
-              <Button
-                onClick={() => {
-                  if (window.confirm('¿Estás seguro de eliminar esta clase?')) {
-                    deleteClass(classItem.id);
-                  }
-                }}
-              >
-                Eliminar
-              </Button>
-            </div>
+            {user?.role === 'admin' && ( 
+              <div>
+                <Button onClick={() => navigate(`/clases/${classItem.id}/edit`)}>Editar</Button>
+                <Button
+                  onClick={() => {
+                    if (window.confirm('¿Estás seguro de eliminar esta clase?')) {
+                      deleteClass(classItem.id);
+                    }
+                  }}
+                >
+                  Eliminar
+                </Button>
+              </div>
+            )}
           </Card>
         ))}
       </ul>

@@ -7,10 +7,6 @@ export const publicRoutes = [
         name: 'Iniciar Sesión',
         path: '/login',
     },
-    {
-        name: 'Nosotros',
-        path: '/about',
-    },
 ]
 
 export const privateRoutes = [

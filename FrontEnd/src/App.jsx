@@ -5,7 +5,6 @@ import { useAuth } from './context/AuthContext';
 import HomePage from "./pages/HomePage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
-import AboutPage from "./pages/AboutPage";
 import ClassPage from "./pages/ClassPage";
 import ExercisePage from "./pages/ExercisePage";
 import RoutinePage from "./pages/RoutinePage";
@@ -36,7 +35,6 @@ function App() {
             <Route exact path="/" element={<HomePage />} />
             <Route exact path="/register" element={<RegisterPage />} />
             <Route exact path="/login" element={<LoginPage />} />
-            <Route exact path="/about" element={<AboutPage />} />
           </Route>
 
           {/* Rutas para admin */}
