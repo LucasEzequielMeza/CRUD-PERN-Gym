@@ -40,15 +40,26 @@ export const createRoutine  = async (req, res, next) => {
 
 export const updateRoutineById = async (req, res, next) => {
     const id = req.params.id;
-    const { title, description, day_of_week, duration, goals, completed } = req.body;
+    const { title, description, day_of_week, duration, goals, completed, started_at, completed_at } = req.body;
 
     try {
         const result = await pool.query(
-            'UPDATE routines SET title = $1, description = $2, day_of_week = $3, duration = $4, goals = $5, completed = $6, updated_at = CURRENT_TIMESTAMP WHERE id = $7 RETURNING *',
-            [title, description, day_of_week, duration, goals, completed, id]
+            `UPDATE routines 
+             SET 
+                 title = COALESCE($1, title), 
+                 description = COALESCE($2, description), 
+                 day_of_week = COALESCE($3, day_of_week), 
+                 duration = COALESCE($4, duration), 
+                 goals = COALESCE($5, goals), 
+                 completed = COALESCE($6, completed), 
+                 started_at = COALESCE($7, started_at), 
+                 completed_at = COALESCE($8, completed_at), 
+                 updated_at = CURRENT_TIMESTAMP 
+             WHERE id = $9 RETURNING *`,
+            [title, description, day_of_week, duration, goals, completed, started_at, completed_at, id]
         );
 
-        if (!result.rows[0]) {
+        if (!result.rows.length) {
             return res.status(404).json({ message: 'Rutina no encontrada' });
         }
 
@@ -57,6 +68,7 @@ export const updateRoutineById = async (req, res, next) => {
         next(error);
     }
 };
+
 
 
 export const deleteRoutineById  = async (req, res, next) => {

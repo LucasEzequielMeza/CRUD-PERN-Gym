@@ -8,13 +8,15 @@ import Button from '../components/UI/Button';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useRoutine } from '../context/RoutineContext';
-import axios from '../api/axios';
 
 function RoutineFormPage() {
-  const { register, handleSubmit, formState: { errors }, setValue } = useForm();
+  const { register, handleSubmit, formState: { errors }, setValue, getValues } = useForm();
   const navigate = useNavigate();
   const params = useParams();
   const { updateRoutine, loadRoutine, createRoutine, routineErrors } = useRoutine();
+  
+  const [exercises, setExercises] = useState([]);
+  const [exerciseInput, setExerciseInput] = useState("");
 
   const daysOfWeek = [
     { value: 'lunes', label: 'Lunes' },
@@ -31,28 +33,47 @@ function RoutineFormPage() {
     { value: '120', label: '120 minutos' },
   ];
 
-  const onSubmit = handleSubmit(async (data) => {
-      let response;
-      if (params.id) {
-        response = await updateRoutine(params.id, data);
-      } else {
-        response = await createRoutine(data)
-      }
-      if (response) {
-        navigate('/rutinas');
-      }
-  });
+  const addExercise = () => {
+    if (exerciseInput.trim() !== "") {
+      setExercises([...exercises, exerciseInput.trim()]);
+      setExerciseInput("");
+    }
+  };
 
+  const removeExercise = (index) => {
+    const newExercises = exercises.filter((_, i) => i !== index);
+    setExercises(newExercises);
+  };
+
+  const loadExercises = () => {
+    const currentDescription = getValues('description') || '';
+    const exercisesText = exercises.join('\n');
+    const newDescription = currentDescription ? `${currentDescription}\n${exercisesText}` : exercisesText;
+    setValue('description', newDescription);
+    setExercises([]);
+  };
+
+  const onSubmit = handleSubmit(async (data) => {
+    let response;
+    if (params.id) {
+      response = await updateRoutine(params.id, data);
+    } else {
+      response = await createRoutine(data);
+    }
+    if (response) {
+      navigate('/rutinas');
+    }
+  });
 
   useEffect(() => {
     if (params.id) {
       loadRoutine(params.id).then((routine) => {
-        setValue("title", routine.title);
-        setValue("description", routine.description);
-        setValue("day_of_week", routine.day_of_week);
-        setValue("duration", routine.duration);
-        setValue("goals", routine.goals);
-        setValue("completed", routine.completed);
+        setValue('title', routine.title);
+        setValue('description', routine.description);
+        setValue('day_of_week', routine.day_of_week);
+        setValue('duration', routine.duration);
+        setValue('goals', routine.goals);
+        setValue('completed', routine.completed);
       });
     }
   }, []);
@@ -78,13 +99,33 @@ function RoutineFormPage() {
               <p className='text-red-500'>El nombre de la rutina es requerido</p>
             )
           }
+          <Label htmlFor="addExercise">Agregar Ejercicio</Label>
+          <Input 
+            type="text" 
+            value={exerciseInput}
+            onChange={(e) => setExerciseInput(e.target.value)} 
+          />
+          <Button type="button" onClick={addExercise}>Agregar</Button>
+          <Button type="button" onClick={loadExercises}>Cargar Ejercicios</Button>
+          <div>
+            {
+              exercises.map((exercise, index) => (
+                <div key={index} className="flex justify-between items-center my-2">
+                  <p className="text-white">{exercise}</p>
+                  <Button type="button" onClick={() => removeExercise(index)}>Eliminar</Button>
+                </div>
+              ))
+            }
+          </div>
+
           <Label htmlFor="description">Ejercicios a hacer</Label>
-          <Textarea {...register('description', { required: true })} />
+          <Textarea {...register('description', { required: true })} disabled />
           {
             errors.description && (
               <p className='text-red-500'>Los ejercicios a hacer son requeridos</p>
             )
           }
+
           <Label htmlFor="day_of_week">Día de la Semana</Label>
           <Select {...register('day_of_week', { required: true })} options={daysOfWeek} />
           <Label htmlFor="duration">Duración de la Rutina</Label>

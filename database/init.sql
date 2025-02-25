@@ -104,6 +104,27 @@ BEFORE UPDATE ON routines
 FOR EACH ROW
 EXECUTE FUNCTION update_timestamp();
 
+ALTER TABLE routines ADD COLUMN started_at TIMESTAMP;
+
+ALTER TABLE routines ADD COLUMN completed_at TIMESTAMP;
+
+CREATE OR REPLACE FUNCTION reset_routine_status()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.completed = TRUE THEN
+        PERFORM pg_sleep(86400); -- 24 horas en segundos
+        UPDATE routines SET completed = FALSE WHERE id = NEW.id;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER reset_completed_status
+AFTER UPDATE ON routines
+FOR EACH ROW
+WHEN (NEW.completed = TRUE)
+EXECUTE FUNCTION reset_routine_status();
+
 
 
 
