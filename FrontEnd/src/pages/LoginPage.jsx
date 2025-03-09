@@ -20,9 +20,10 @@ function LoginPage() {
   return (
     <div className='h-[calc(100vh-8rem)] flex items-center justify-center'>
       <Card>
-        {errors && errors.map((err, index) => (
-          <p key={index} className='bg-red-500 text-white p-2 text-center'>{err.message || err}</p>
+        {errors && Array.isArray(errors) && errors.map((err, index) => (
+          <p key={index} className='bg-red-500 text-white p-2 text-center'>{err}</p>
         ))}
+
         <h1 className='text-2xl font-bold text-white'>Iniciar Sesión</h1>
         <form onSubmit={onSubmit}>
           <Label htmlFor='email'>E-mail</Label>

@@ -78,9 +78,10 @@ export function AuthProvider({ children }) {
 
     const signin = async (data) => {
         try {
+            setErrors(null); 
+    
             const response = await axios.post('/signin', data, { withCredentials: true });
     
-          
             const { user, token } = response.data;
             
             if (!token) {
@@ -98,9 +99,10 @@ export function AuthProvider({ children }) {
             navigate('/');
         } catch (error) {
             console.error("Error en signin:", error);
-            setErrors(error.response?.data || ['Error desconocido']);
+            setErrors([error.response?.data.message || 'Error desconocido']);
         }
     };
+    
     
     
     

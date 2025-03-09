@@ -2,26 +2,37 @@ import React, { useState, useEffect } from 'react';
 import axios from '../api/axios.js';
 
 function ClientsPage() {
-
   const [clients, setClients] = useState([]);
   const [clientsError, setClientsError] = useState([]);
+  const [search, setSearch] = useState('');
 
   const loadClients = async () => {
     try {
-      const response = await axios.get('/users');
+      const response = await axios.get(`/users?search=${search}`);
       setClients(response.data);
     } catch (error) {
-      setClientsError([error.response.data]);
+      setClientsError([error.response?.data?.message || "Error al cargar clientes"]);
     }
-  }
+  };
 
   useEffect(() => {
     loadClients();
-  }, []);
+  }, [search]); 
 
   return (
     <div className="container mx-auto px-4">
       <h1 className="text-4xl font-bold text-center my-6">Clientes</h1>
+
+      <div className="flex justify-center mb-4">
+        <input
+          type="text"
+          placeholder="Buscar por nombre, email o teléfono..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="px-4 py-2 border border-gray-300 rounded-lg"
+        />
+      </div>
+
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-300">
           <thead>
@@ -45,6 +56,7 @@ function ClientsPage() {
             ))}
           </tbody>
         </table>
+
         {clientsError.length > 0 && (
           <div className="mt-4 text-red-500">
             {clientsError.map((error, index) => (

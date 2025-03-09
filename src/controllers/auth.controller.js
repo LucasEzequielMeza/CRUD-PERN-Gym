@@ -4,34 +4,41 @@ import { pool } from "../db.js";
 import { createAccessToken } from '../libs/jwt.js';
 
 export const signin = async (req, res) => {
-    const { email, password } = req.body;
+    try {
+        const { email, password } = req.body;
 
-    const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+        const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
 
-    if (result.rowCount === 0) {
-        return res.status(400).json({ message: 'El correo electrónico no existe' });
+        if (result.rowCount === 0) {
+            return res.status(400).json({ message: 'El correo electrónico no existe' });
+        }
+
+        const validPassword = await bcrypt.compare(password, result.rows[0].password);
+
+        if (!validPassword) {
+            return res.status(400).json({ message: 'Contraseña incorrecta' });
+        }
+
+        const token = await createAccessToken({ id: result.rows[0].id });
+
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'Strict',
+            maxAge: 24 * 60 * 60 * 1000,
+        });
+
+        return res.json({
+            user: result.rows[0],
+            token: token           
+        });
+
+    } catch (error) {
+        console.error("Error en signin:", error);
+        return res.status(500).json({ message: 'Error interno del servidor' });
     }
-
-    const validPassword = await bcrypt.compare(password, result.rows[0].password);
-
-    if (!validPassword) {
-        return res.status(400).json({ message: 'Contraseña incorrecta' });
-    }
-
-    const token = await createAccessToken({ id: result.rows[0].id });
-
-    res.cookie('token', token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'Strict',
-        maxAge: 24 * 60 * 60 * 1000,
-    });
-
-    return res.json({
-        user: result.rows[0],
-        token: token           
-    });
 };
+
 
 
 export const signup = async (req, res, next) => {

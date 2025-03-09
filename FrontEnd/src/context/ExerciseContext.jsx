@@ -15,16 +15,18 @@ export const ExerciseProvider = ({children}) => {
     const [exercises, setExercises] = useState([])
     const [exerciseErrors, setExerciseErrors] = useState([])
 
-    const loadExercises = async () => {
+    const loadExercises = async (filters = {}) => {
         try {
-            const response = await axios.get('/exercises')
-            setExercises(response.data)
+            const queryParams = new URLSearchParams(filters).toString();
+            const response = await axios.get(`/exercises?${queryParams}`);
+            setExercises(response.data);
         } catch (error) {
-            setExerciseErrors(error.message)
+            setExerciseErrors(error.message);
         }
-    }
+    };
+    
 
-    const loadExercise = async () => {
+    const loadExercise = async (id) => {
         try {
             const response = await axios.get(`/exercises/${id}`)
             return response.data

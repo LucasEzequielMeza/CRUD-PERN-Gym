@@ -1,12 +1,27 @@
 import bcrypt from 'bcrypt';
 import {pool} from '../db.js'
 
-export const getAllClients = async (req, res, next) => { //solo admin
+export const getAllClients = async (req, res, next) => { // Solo admin
+    const { search } = req.query; // Captura el valor de búsqueda
 
-    const result = await pool.query('SELECT * FROM users') //Obtenemos todos clientes que estan en la tabla users
+    let query = 'SELECT * FROM users';
+    let params = [];
 
-    return res.json(result.rows)
-}
+    if (search) {
+        query += ` WHERE LOWER(first_name) LIKE LOWER($1) 
+                   OR LOWER(last_name) LIKE LOWER($1) 
+                   OR LOWER(email) LIKE LOWER($1) 
+                   OR phone_number LIKE $1`;
+        params.push(`%${search}%`);
+    }
+
+    try {
+        const result = await pool.query(query, params);
+        return res.json(result.rows);
+    } catch (error) {
+        return res.status(500).json({ message: "Error al obtener los clientes", error });
+    }
+};
 
 export const getClientById = async (req, res) => { //solo admin (Ver si se puede filtrar por nombres y mails)
 

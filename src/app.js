@@ -1,11 +1,12 @@
 import express from 'express';
 import morgan from 'morgan';
+import cors from 'cors'
+import cookieParser from 'cookie-parser';
+
 import clientRouters from './routes/clients.routes.js'
 import authRoutes from './routes/auth.routes.js'
-import cors from 'cors'
 import clasesRoutes from './routes/clases.routes.js'
 import routineRoutes from './routes/routine.routes.js'
-import cookieParser from 'cookie-parser';
 import exerciseRoutes from './routes/exercise.routes.js';
 
 

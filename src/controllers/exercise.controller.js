@@ -1,10 +1,25 @@
 import { pool } from '../db.js'
 
 export const getAllExercises = async (req, res) => {
-    const result = await pool.query('SELECT * FROM exercise')
+    const { search } = req.query; // Captura el valor de búsqueda
 
-    return res.json(result.rows)
-}
+    let query = 'SELECT * FROM exercise';
+    let params = [];
+
+    if (search) {
+        query += ` WHERE LOWER(name_exercise) LIKE LOWER($1) OR LOWER(body_part) LIKE LOWER($1)`;
+        params.push(`%${search}%`);
+    }
+
+    try {
+        const result = await pool.query(query, params);
+        return res.json(result.rows);
+    } catch (error) {
+        return res.status(500).json({ message: "Error al obtener los ejercicios", error });
+    }
+};
+
+
 
 export const getExerciseById =  async (req, res) => {
     const result = await pool.query('SELECT * FROM exercise WHERE id = $1' , [req.params.id])
